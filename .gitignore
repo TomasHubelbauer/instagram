@@ -1,0 +1,4 @@
+*.data.json
+
+# Node
+node_modules
