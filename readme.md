@@ -4,7 +4,9 @@ Scrapes followers and posts off Instagram and emails changes.
 
 ## Running
 
-`node . ${handle}`
+`node . ${handles}`
+
+`handles` is a comma-separated string of Instagram handles.
 
 A file name `${handle}.data.json` will be created.
 
