@@ -18,15 +18,26 @@ module.exports = async function () {
   for (const handle of handles) {
     const response = await fetch('https://www.instagram.com/' + handle);
     const text = await response.text();
-    const regex = /<meta content="(?<followers>\d+) Followers,( (?<following>\d+) Following,)? (?<posts>\d+) Posts(?<bio>[^"]+)" name="description" \/>/gm;
+    const regex = /<script type="text\/javascript">window._sharedData = (?<json>[^;]+);<\/script>/gm;
     const match = await regex.exec(text);
-    const { followers, following, posts } = match.groups;
+    const json = match.groups.json;
+    const user = JSON.parse(json).entry_data.ProfilePage[0].graphql.user;
 
     /** @typedef {{ followers: number; following: number; posts: nunber; }} Data */
     /** @type {Data} */
-    const data = { followers: Number(followers), following: Number(following), posts: Number(posts) };
-    const fileName = handle + '.data.json';
+    const data = {
+      bio: user.biography,
+      web: user.external_url,
+      followers: user.edge_followed_by.count,
+      following: user.edge_follow.count,
+      name: user.full_name,
+      id: user.id,
+      avatar: user.profile_pic_url,
+      handle: user.username,
+      posts: user.edge_owner_to_timeline_media.count,
+    };
 
+    const fileName = handle + '.data.json';
     if (email) {
       try {
         /** @type {Data} */
