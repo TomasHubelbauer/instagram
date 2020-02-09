@@ -7,6 +7,7 @@ Scrapes followers and posts off Instagram and emails changes.
 `node . ${handles}`
 
 `handles` is a comma-separated string of Instagram handles.
+It can also be provided through a `INSTAGRAM_HANDLES` environment variable.
 
 A file name `${handle}.data.json` will be created.
 

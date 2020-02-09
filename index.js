@@ -9,7 +9,7 @@ catch (error) {
 }
 
 module.exports = async function () {
-  let handles = process.argv[2];
+  let handles = process.argv[2] || process.env.INSTAGRAM_HANDLES;
   if (!handles) {
     throw new Error('The handle(s) must be passed in a command line argument!');
   }
