@@ -1,14 +1,7 @@
 const fetch = require('node-fetch');
 const fs = require('fs-extra');
-let email;
-let headers;
-try {
-  email = require('../self-email');
-  headers = require('../self-email/headers');
-}
-catch (error) {
-  // Ignore the lack of emailer on the system
-}
+const email = require('../self-email');
+const headers = require('../self-email/headers');
 
 module.exports = async function () {
   let handles = process.argv[2] || process.env.INSTAGRAM_HANDLES;
