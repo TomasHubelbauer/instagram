@@ -1,8 +1,7 @@
 const fetch = require('node-fetch');
 const fs = require('fs-extra');
 const email = require('../self-email');
-const headers = require('../self-email/headers');
-const footer = require('../self-email/footer');
+const { eml, subject, sender, recipient } = require('../self-email');
 
 module.exports = async function () {
   let handles = process.argv[2] || process.env.INSTAGRAM_HANDLES;
@@ -44,13 +43,16 @@ module.exports = async function () {
       /** @type {Data} */
       const knownData = await fs.readJson(fileName);
       await email(
-        headers(`Instagram Stats for ${handle}`, 'Instagram'),
-        '<ul>',
-        `<li>Followers: ${data.followers} (${knownData.followers === data.followers ? 'unchanged' : `from ${knownData.followers}`})</li>`,
-        `<li>Following: ${data.following} (${knownData.following === data.following ? 'unchanged' : `from ${knownData.following}`})</li>`,
-        `<il>Posts: ${data.posts} (${knownData.posts === data.posts ? 'unchanged' : `from ${knownData.posts}`})</li>`,
-        '</ul>',
-        ...footer('Instagram')
+        eml(
+          subject(`Instagram Stats for ${handle}`),
+          sender('Instagram <bot+insta@hubelbauer.net>'),
+          recipient('Tomas Hubelbauer <tomas@hubelbauer.net>'),
+          '<ul>',
+          `<li>Followers: ${data.followers} (${knownData.followers === data.followers ? 'unchanged' : `from ${knownData.followers}`})</li>`,
+          `<li>Following: ${data.following} (${knownData.following === data.following ? 'unchanged' : `from ${knownData.following}`})</li>`,
+          `<il>Posts: ${data.posts} (${knownData.posts === data.posts ? 'unchanged' : `from ${knownData.posts}`})</li>`,
+          '</ul>',
+        )
       );
     }
     catch (error) {
