@@ -42,16 +42,39 @@ module.exports = async function () {
     try {
       /** @type {Data} */
       const knownData = await fs.readJson(fileName);
+
+      const followerChange = [
+        `${data.followers} (-${knownData.followers - data.followers})`,
+        `${data.followers} (unchanged)`,
+        `${data.followers} (+${data.followers - knownData.followers})`
+      ][Math.sign(data.followers - knownData.followers) + 1];
+
+      const followingChange = [
+        `${data.following} (-${knownData.following - data.following})`,
+        `${data.following} (unchanged)`,
+        `${data.following} (+${data.following - knownData.following})`
+      ][Math.sign(data.following - knownData.following) + 1];
+
+      const postsChange = [
+        `${data.posts} (-${knownData.posts - data.posts})`,
+        `${data.posts} (unchanged)`,
+        `${data.posts} (+${data.posts - knownData.posts})`
+      ][Math.sign(data.posts - knownData.posts) + 1];
+
+      // TODO: Email the differences (followers, unfollowers, following, unfollowing, new post embed)
       await email(
         eml(
           subject(`Instagram Stats for ${handle}`),
           sender('Instagram <bot+insta@hubelbauer.net>'),
           recipient('Tomas Hubelbauer <tomas@hubelbauer.net>'),
-          '<ul>',
-          `<li>Followers: ${data.followers} (${knownData.followers === data.followers ? 'unchanged' : `from ${knownData.followers}`})</li>`,
-          `<li>Following: ${data.following} (${knownData.following === data.following ? 'unchanged' : `from ${knownData.following}`})</li>`,
-          `<il>Posts: ${data.posts} (${knownData.posts === data.posts ? 'unchanged' : `from ${knownData.posts}`})</li>`,
-          '</ul>',
+          `<h1>Instagram Stats for ${handle}</h1>`,
+          '<h2>Followers</h2>',
+          followerChange,
+          '<h2>Following</h2>',
+          followingChange,
+          '<h2>Posts</h2>',
+          postsChange,
+          '<p>Thanks!</p>'
         )
       );
     }
