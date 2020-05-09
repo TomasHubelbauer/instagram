@@ -35,9 +35,6 @@ module.exports = async function () {
     };
 
     console.log(handle);
-    console.log('\tfollowers', data.followers);
-    console.log('\tfollowing', data.following);
-    console.log('\tposts', data.posts);
 
     const fileName = path.join(__dirname, handle + '.data.json');
     try {
@@ -49,18 +46,21 @@ module.exports = async function () {
         `${data.followers} (unchanged)`,
         `${data.followers} (+${data.followers - knownData.followers})`
       ][Math.sign(data.followers - knownData.followers) + 1];
+      console.log('\tfollowers', data.followers, followerChange);
 
       const followingChange = [
         `${data.following} (-${knownData.following - data.following})`,
         `${data.following} (unchanged)`,
         `${data.following} (+${data.following - knownData.following})`
       ][Math.sign(data.following - knownData.following) + 1];
+      console.log('\tfollowing', data.following, followingChange);
 
       const postsChange = [
         `${data.posts} (-${knownData.posts - data.posts})`,
         `${data.posts} (unchanged)`,
         `${data.posts} (+${data.posts - knownData.posts})`
       ][Math.sign(data.posts - knownData.posts) + 1];
+      console.log('\tposts', data.posts, postsChange);
 
       // TODO: Email the differences (followers, unfollowers, following, unfollowing, new post embed)
       await email(
@@ -86,6 +86,8 @@ module.exports = async function () {
 
     await fs.writeJson(fileName, data, { spaces: 2 });
   }
+
+  return `${handles.length} handles processed`;
 };
 
 if (process.cwd() === __dirname) {
