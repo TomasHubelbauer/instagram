@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 const fs = require('fs-extra');
+const path = require('path');
 const email = require('../self-email');
 const { eml, subject, sender, recipient } = require('../self-email');
 
@@ -38,7 +39,7 @@ module.exports = async function () {
     console.log('\tfollowing', data.following);
     console.log('\tposts', data.posts);
 
-    const fileName = handle + '.data.json';
+    const fileName = path.join(__dirname, handle + '.data.json');
     try {
       /** @type {Data} */
       const knownData = await fs.readJson(fileName);
@@ -87,4 +88,6 @@ module.exports = async function () {
   }
 };
 
-module.exports = module.exports();
+if (process.cwd() === __dirname) {
+  module.exports();
+}
